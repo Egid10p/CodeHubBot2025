@@ -8,6 +8,10 @@ app = FastAPI()
 def home():
     return {"message": "El servidor está corriendo 🔥"}
 
+@app.head("/")
+async def head_home():
+    return {}
+
 @app.get("/status")
 def status():
     return {"status": "online"}
