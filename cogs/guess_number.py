@@ -6,39 +6,71 @@ from discord.ext import commands
 class GuessNumber(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command(name="guess_number", aliases=["adivinar"])
     async def guess(self, ctx):
-        number = random.randint(1, 100) 
-        await ctx.send("¡Adivina el número entre 1 y 100! Tienes 10 intentos y 5 segundos por intento.")
-
-        attempts = 0
+        number = random.randint(1, 100)
         max_attempts = 10
+        attempts = 0
+
+        embed = discord.Embed(
+            title="🎯 Adivina el número",
+            description="¡Intenta adivinar el número entre **1 y 100**!\nTienes **10 intentos** y **5 segundos** por intento.",
+            color=discord.Color.blue()
+        )
+        embed.set_footer(text="Escribe un número en el chat para jugar.")
+        await ctx.send(embed=embed)
 
         while attempts < max_attempts:
             attempts += 1
-            await ctx.send(f"Intento {attempts}/{max_attempts}. Tienes 5 segundos para adivinar.")
+
+            embed = discord.Embed(
+                title=f"Intento {attempts}/{max_attempts} ⏳",
+                description="Tienes **5 segundos** para responder.",
+                color=discord.Color.orange()
+            )
+            await ctx.send(embed=embed)
 
             def check(m):
                 return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
 
             try:
-                msg = await self.bot.wait_for("message", check=check, timeout=5.0) 
+                msg = await self.bot.wait_for("message", check=check, timeout=5.0)
                 guess = int(msg.content)
 
                 if guess == number:
-                    await ctx.send("¡Correcto! Adivinaste el número. 🎉")
-                    return
+                    embed = discord.Embed(
+                        title="🎉 ¡Correcto!",
+                        description=f"¡Felicidades {ctx.author.mention}, adivinaste el número! 🎯",
+                        color=discord.Color.green()
+                    )
+                    return await ctx.send(embed=embed)
                 elif guess < number:
-                    await ctx.send("El número es MAS MAYOR. ¡Intenta de nuevo!")
+                    hint = "El número es **MAYOR** 🔼"
                 else:
-                    await ctx.send("El número es MENOR. ¡Intenta de nuevo!")
+                    hint = "El número es **MENOR** 🔽"
+
+                embed = discord.Embed(
+                    title="❌ Incorrecto",
+                    description=f"{hint} | Intentos restantes: **{max_attempts - attempts}**",
+                    color=discord.Color.red()
+                )
+                await ctx.send(embed=embed)
 
             except asyncio.TimeoutError:
-                await ctx.send(f"⏳ ¡Se acabó el tiempo! El número era {number}.")
-                return
+                embed = discord.Embed(
+                    title="⏳ ¡Se acabó el tiempo!",
+                    description=f"No respondiste a tiempo. El número era **{number}**.",
+                    color=discord.Color.red()
+                )
+                return await ctx.send(embed=embed)
 
-        await ctx.send(f"¡Te quedaste sin intentos! El número era {number}.")
+        embed = discord.Embed(
+            title="❌ ¡Te quedaste sin intentos!",
+            description=f"El número era **{number}**. ¡Mejor suerte la próxima vez! 🎲",
+            color=discord.Color.red()
+        )
+        await ctx.send(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(GuessNumber(bot))
