@@ -7,7 +7,7 @@ class RussianRoulette(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(name="russian_roulette", aliases=["ruleta"])
+    @commands.command(name="russian_roulette", aliases=["ruleta"], help="Juega a la ruleta rusa. ")
     async def roulette(self, ctx):
         game_result = russian_roulette()
         member = ctx.author
@@ -15,7 +15,7 @@ class RussianRoulette(commands.Cog):
         muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
         
         if not muted_role:
-            muted_role = await ctx.guild.create_role(name="Muted", reason="Rol para ruleta rusa")
+            muted_role = await ctx.guild.create_role(name="Muted", reason="Rol para ruleta rusa. En caso de que te dispare no podrás hablar durante 5 minutos. Ten cuidado!")
             for channel in ctx.guild.channels:
                 await channel.set_permissions(muted_role, send_messages=False)
         

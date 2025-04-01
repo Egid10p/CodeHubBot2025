@@ -7,7 +7,7 @@ class GuessNumber(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="guess_number", aliases=["adivinar"])
+    @commands.command(name="guess_number", aliases=["adivinar"] , help="Adivina un número entre 1 y 100.")
     async def guess(self, ctx):
         number = random.randint(1, 100)
         max_attempts = 10
