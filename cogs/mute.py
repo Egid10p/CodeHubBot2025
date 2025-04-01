@@ -5,7 +5,7 @@ class Mute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="mute", aliases=["silenciar"])
+    @commands.command(name="mute", aliases=["silenciar"], help="Silencia a un usuario en el servidor. Uso unico de administradores.")
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, member: discord.Member, *, reason="No se especificó razón"):
         muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
